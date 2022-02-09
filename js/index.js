@@ -6,6 +6,10 @@ var camera, controls, scene, renderer, stats;
 init();
 animate();
 
+const v3 = THREE.Vector3;
+
+// function draw3D(v3)
+
 function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.z = 10;
@@ -55,6 +59,19 @@ function init() {
     scene.add(light);
     var light = new THREE.AmbientLight(0x222222);
     scene.add(light);
+
+    const dir = new THREE.Vector3(1, 0, 0);
+    //normalize the direction vector (convert to vector of length 1)
+    dir.normalize();
+
+    const origin = new THREE.Vector3(0, 0, 0);
+    const length = 1;
+    const hex = 0xffff00;
+    const arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
+    scene.add(arrowHelper);
+
+    const axesHelper = new THREE.AxesHelper(5);
+    scene.add(axesHelper);
 
     // renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
