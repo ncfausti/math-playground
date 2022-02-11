@@ -6,14 +6,13 @@ var camera, controls, scene, renderer, stats;
 init();
 animate();
 
-const v3 = THREE.Vector3;
+function v3(x, y, z) { return new THREE.Vector3(x, y, z) }
 
-// function draw3D(v3)
 
 function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 10;
-    camera.position.y = 10;
+    camera.position.z = 7;
+    camera.position.y = 7;
     controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 1.0;
     controls.zoomSpeed = 1.2;
@@ -29,6 +28,12 @@ function init() {
     // scene.background = new THREE.Color(0xcccccc);
     // scene.background = new THREE.Color(0xcc4433);
 
+    // mimic draw3D from Orland book
+    const draw3d = (...objs) => objs.forEach(obj => scene.add(obj));
+    const arrow3d = (dir, origin, length, color, headLength, headWidth) => {
+        const _origin = origin || v3(0, 0, 0);
+        return new THREE.ArrowHelper(dir, _origin, length, color, headLength, headWidth);
+    }
 
     // scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
     var geometry = new THREE.CylinderBufferGeometry(0, 10, 90, 4, 1);
@@ -46,32 +51,113 @@ function init() {
     // mesh.updateMatrix();
     // mesh.matrixAutoUpdate = false;
     // scene.add(mesh);
-    scene.add(new THREE.GridHelper());
+
+    draw3d(new THREE.GridHelper());
     //         }
     //     }
     // }
     // lights
     var light = new THREE.DirectionalLight(0xffffff);
     light.position.set(1, 1, 1);
-    scene.add(light);
+    draw3d(light);
     var light = new THREE.DirectionalLight(0x002288);
     light.position.set(- 1, - 1, - 1);
-    scene.add(light);
+    draw3d(light);
     var light = new THREE.AmbientLight(0x222222);
-    scene.add(light);
+    draw3d(light);
 
-    const dir = new THREE.Vector3(1, 0, 0);
+    const dirX = new THREE.Vector3(2, 0, 0);
+    const dirY = new THREE.Vector3(0, 2, 0);
+    const dirZ = new THREE.Vector3(0, 0, 2);
     //normalize the direction vector (convert to vector of length 1)
-    dir.normalize();
+    // dir.normalize();
 
-    const origin = new THREE.Vector3(0, 0, 0);
+    const origin = v3(0, 0, 0) // new THREE.Vector3(0, 0, 0);
     const length = 1;
-    const hex = 0xffff00;
-    const arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
-    scene.add(arrowHelper);
-
+    const red = 0xff0000;
+    const green = 0x00ff00;
+    const blue = 0x0000ff;
+    const pink = 0xff00ff;
+    const yellow = 0xffff00;
+    const cyan = 0x00ffff;
+    const magenta = 0xff00ff;
+    const white = 0xffffff;
+    // const arrowHelper = new THREE.ArrowHelper(dir, origin, length, red);
     const axesHelper = new THREE.AxesHelper(5);
-    scene.add(axesHelper);
+    // axesHelper.setColors(0xff0000, 0x0000ff, 0x00ff00);
+
+    // const Arrow3d(dir) => {
+    //     const dir = new THREE.Vector3(...tupDir);
+    //     const origin = new THREE.Vector3(...tupOrigin);
+    //     const arrowHelper = new THREE.ArrowHelper(dir, origin, length, color);
+    //     scene.add(arrowHelper);
+    // }
+
+    const subVec = v3(...subLists(
+        v3(4, 3, 0).toArray(),
+        v3(1, 1, 0).toArray()));
+
+
+    draw3d(
+        // xyz axes
+        arrow3d(dirX, origin, length, red), // x
+        arrow3d(dirY, origin, length, green), // y
+        arrow3d(dirZ, origin, length, blue), // z 
+
+        arrow3d(v3(4, 3, 0).normalize(), v3(0, 0, 0), v3(4, 0, 3).length(), red),
+        // opposite direction as red, with starting point at tip of pink
+        arrow3d(v3(-1 * 4, -1 * 3, 0).normalize(), v3(3, 4, 0), v3(3, 4, 0).length(), red),
+
+        arrow3d(v3(-1, 1, 0).normalize(), v3(0, 0, 0), v3(-1, 1, 0).length(), blue),
+        arrow3d(v3(-1, 1, 0).normalize(), v3(4, 3, 0), v3(-1, 1, 0).length(), blue),
+
+
+
+        // pink hypotenuse
+        arrow3d(v3(3, 4, 0).normalize(), v3(0, 0, 0), v3(3, 4, 0).length(), pink),
+        // opposite direction
+        arrow3d(v3(-1 * 3, -1 * 4, -1 * 0).normalize(), v3(3, 4, 0), v3(4, 0, 3).length(), pink),
+
+        // an arrow that goes from 3,3,3 to (-1,-1,-1)
+        arrow3d(v3(-1, -1, -1).normalize(), v3(3, 3, 3), v3(1, 1, 1).length() * 4, white),
+
+        arrow3d(v3(1, 0, 0).normalize(), v3(0, 0, 0), 3, white),
+        arrow3d(v3(1, 0, 1).normalize(), v3(0, 0, 0), v3(3, 0, 3).length(), white),
+        arrow3d(v3(0, 1, 0).normalize(), v3(3, 0, 3), v3(0, 0, 3).length(), cyan),
+
+
+
+
+        // subtraction vector (x-z)
+        // arrow3d(subVec.normalize(),
+        //     subVec.length(), 0xff0000))
+        // arrow3d(v3(0, 0, -1).normalize(), v3(1, 1, 1), v3(0, 0, -1).length(), 0xaaff00),
+        // arrow3d(v3(0, 0, -1).normalize(), v3(1, 1, 1), v3(0, 0, -1).length(), 0xaaff00),
+        // arrow3d(v3(0, 0, -1).normalize(), v3(1, 1, 1), v3(0, 0, -1).length(), 0xaaff00),
+        // arrow3d(new THREE.Vector3(1, 1, 1), THREE.Vector3(0, 0, 0)),
+        axesHelper
+    );
+
+    // vector addition (4,0,3) + (-1, 0, 1) = (3, 0, 4) 
+    // how can I turn this into a compiler??, that accepts standard math notation
+    // and outputs this draw3d code:
+    // draw3d(
+    //     arrow3d(v3(4, 0, 3), v3(0, 0, 0), v3(4, 0, 3).length(), 0x0000ff),
+    //     arrow3d(v3(-1, 0, 1), v3(4, 0, 3), v3(-1, 0, 1).length(), 0xff0000),
+    //     arrow3d(
+    //         addVec3(
+    //             v3(4, 0, 3),
+    //             v3(-1, 0, 1)
+    //         ),
+    //         v3(0, 0, 0),
+    //         addVec3(
+    //             v3(4, 0, 3),
+    //             v3(-1, 0, 1)
+    //         ).length(),
+    //         0xff00ff,
+    //     )
+    // )
+
 
     // renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
