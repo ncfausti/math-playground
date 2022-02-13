@@ -2,11 +2,45 @@ if (WEBGL.isWebGLAvailable() === false) {
     document.body.appendChild(WEBGL.getWebGLErrorMessage());
 }
 var camera, controls, scene, renderer, stats;
+const red = 0xff0000;
+const green = 0x00ff00;
+const blue = 0x0000ff;
+const pink = 0xff00ff;
+const yellow = 0xffff00;
+const cyan = 0x00ffff;
+const magenta = 0xff00ff;
+const white = 0xffffff;
 
 init();
 animate();
 
 function v3(x, y, z) { return new THREE.Vector3(x, y, z) }
+
+function arrow3d(dir, origin, length, color, headLength, headWidth) {
+    const _origin = origin || v3(0, 0, 0);
+    const _color = color || 0xffffff;
+    return new THREE.ArrowHelper(dir, _origin, length, color, headLength, headWidth);
+}
+
+function toFrom(to, from) {
+    const _from = from || v3(0, 0, 0);
+    const dirX = to.x - _from.x;
+    const dirY = to.y - _from.y;
+    const dirZ = to.z - _from.z;
+
+    const dir = v3(dirX, dirY, dirZ).normalize();
+
+    // var max = dirX >= dirY ? dirX : dirY;
+    // max = max >= dirZ ? max : dirZ;
+    // const hyp1 = Math.sqrt(dirX ** 2 + dirZ ** 2);
+    // const hyp2 = Math.sqrt(hyp1 ** 2 + dirY ** 2);
+    // const distance = Math.sqrt(<hyp1 + hyp2)
+
+    // const hyp3 = Math.max(hyp1, hyp2);
+    const distance = Math.sqrt(dirZ ** 2 + dirX ** 2 + dirY ** 2);
+    console.log('dist:', distance);
+    return arrow3d(dir, _from, distance)
+}
 
 
 function init() {
@@ -30,10 +64,6 @@ function init() {
 
     // mimic draw3D from Orland book
     const draw3d = (...objs) => objs.forEach(obj => scene.add(obj));
-    const arrow3d = (dir, origin, length, color, headLength, headWidth) => {
-        const _origin = origin || v3(0, 0, 0);
-        return new THREE.ArrowHelper(dir, _origin, length, color, headLength, headWidth);
-    }
 
     // scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
     var geometry = new THREE.CylinderBufferGeometry(0, 10, 90, 4, 1);
@@ -74,14 +104,7 @@ function init() {
 
     const origin = v3(0, 0, 0) // new THREE.Vector3(0, 0, 0);
     const length = 1;
-    const red = 0xff0000;
-    const green = 0x00ff00;
-    const blue = 0x0000ff;
-    const pink = 0xff00ff;
-    const yellow = 0xffff00;
-    const cyan = 0x00ffff;
-    const magenta = 0xff00ff;
-    const white = 0xffffff;
+
     // const arrowHelper = new THREE.ArrowHelper(dir, origin, length, red);
     const axesHelper = new THREE.AxesHelper(5);
     // axesHelper.setColors(0xff0000, 0x0000ff, 0x00ff00);
@@ -97,7 +120,6 @@ function init() {
         v3(4, 3, 0).toArray(),
         v3(1, 1, 0).toArray()));
 
-
     draw3d(
         // xyz axes
         arrow3d(dirX, origin, length, red), // x
@@ -106,12 +128,10 @@ function init() {
 
         arrow3d(v3(4, 3, 0).normalize(), v3(0, 0, 0), v3(4, 0, 3).length(), red),
         // opposite direction as red, with starting point at tip of pink
-        arrow3d(v3(-1 * 4, -1 * 3, 0).normalize(), v3(3, 4, 0), v3(3, 4, 0).length(), red),
+        arrow3d(v3(-1 * 4, -1 * 3, -1 * 0).normalize(), v3(3, 4, 0), v3(3, 4, 0).length(), red),
 
         arrow3d(v3(-1, 1, 0).normalize(), v3(0, 0, 0), v3(-1, 1, 0).length(), blue),
         arrow3d(v3(-1, 1, 0).normalize(), v3(4, 3, 0), v3(-1, 1, 0).length(), blue),
-
-
 
         // pink hypotenuse
         arrow3d(v3(3, 4, 0).normalize(), v3(0, 0, 0), v3(3, 4, 0).length(), pink),
@@ -119,11 +139,15 @@ function init() {
         arrow3d(v3(-1 * 3, -1 * 4, -1 * 0).normalize(), v3(3, 4, 0), v3(4, 0, 3).length(), pink),
 
         // an arrow that goes from 3,3,3 to (-1,-1,-1)
-        arrow3d(v3(-1, -1, -1).normalize(), v3(3, 3, 3), v3(1, 1, 1).length() * 4, white),
+        // arrow3d(v3(-1, -1, -1).normalize(), v3(3, 3, 3), v3(1, 1, 1).length() * 4, white),
+        toFrom(v3(-1, 1, 0), v3(3, 3, 3)),
+        toFrom(v3(0, 3, 3), v3(3, 3, 3)),
 
         arrow3d(v3(1, 0, 0).normalize(), v3(0, 0, 0), 3, white),
         arrow3d(v3(1, 0, 1).normalize(), v3(0, 0, 0), v3(3, 0, 3).length(), white),
         arrow3d(v3(0, 1, 0).normalize(), v3(3, 0, 3), v3(0, 0, 3).length(), cyan),
+
+
 
 
 

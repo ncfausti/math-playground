@@ -38,10 +38,6 @@ const subLists = (v1, v2) => [...[...diffs(v1, v2)]];
 
 const mapToFrom = (to, from) => [subLists(to, from), 0, 0];
 
-
-console.log(mapToFrom([1, 1, 1], [4, 4, 4]));
-
-
 assertEquals(sum([1, 2, 3]), 6);
 assertEquals(sum([-1, 0, 1, 8]), 8);
 assertEquals(sum([-1, -1, -1]), -3);
@@ -68,6 +64,7 @@ assertEquals(
     ),
     true);
 
+// console.log(mapToFrom([1, 1, 1], [4, 4, 4]));
 // assertEquals(
 //     arrayEquals(
 //         mapToFrom([1, 1, 1], [4, 4, 4])[0],
