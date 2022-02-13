@@ -11,6 +11,8 @@ const cyan = 0x00ffff;
 const magenta = 0xff00ff;
 const white = 0xffffff;
 
+var cam1 = true;
+
 init();
 animate();
 
@@ -40,29 +42,31 @@ function toFrom(to, from, color) {
 
 function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 3;
-    camera.position.y = 3;
+    camera.position.x = 5;
+    camera.position.z = 5;
+    camera.position.y = 5;
+
     controls = new THREE.TrackballControls(camera);
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
+    controls.rotateSpeed = 10.0;
+    controls.zoomSpeed = .8;
     controls.panSpeed = 0.8;
     controls.noZoom = false;
     controls.noPan = false;
     controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
+    controls.dynamicDampingFactor = 0.1;
     controls.keys = [65, 83, 68];
     controls.addEventListener('change', render);
 
     // world
     scene = new THREE.Scene();
     // scene.background = new THREE.Color(0xcccccc);
-    // scene.background = new THREE.Color(0xcc4433);
+    scene.background = new THREE.Color(0xcc4433);
 
     // mimic draw3D from Orland book
     const draw3d = (...objs) => objs.forEach(obj => scene.add(obj));
 
     // pink fog
-    scene.fog = new THREE.FogExp2(0xcc00cc, 0.05);
+    scene.fog = new THREE.FogExp2(0xff00ff, 0.08);
 
     // var geometry = new THREE.CylinderBufferGeometry(0, 10, 90, 4, 1);
     // var material = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
@@ -136,7 +140,7 @@ function init() {
         // toFrom(v3(3, 3, 3), v3(0, 3, 3)),
 
         // toFrom(v3(.3, .3, .3), v3(0, 0, 1), pink),
-        toFrom(v3(.33, .333, 1), startingPoint, pink),
+        // toFrom(v3(.33, .333, 1), startingPoint, white),
 
         // toFrom(v3(.666, .666, .666), v3(.33, .333, 1), pink),
         // toFrom(v3(.666, .999, .333), v3(.666, .666, .666), pink),
@@ -154,9 +158,9 @@ function init() {
 
     // rotate 1/4 around the origin
     nextPoint = to_cartesian(polarStart[0], polarStart[1] + 1);
-    draw3d(
-        toFrom(v3(nextPoint[0], 0, nextPoint[1]), startingPoint)
-    )
+    // draw3d(
+    //     toFrom(v3(nextPoint[0], 0, nextPoint[1]), startingPoint)
+    // )
 
     var pNewPoint = to_polar(nextPoint[0], nextPoint[1]);
     var cNewPoint = to_cartesian(pNewPoint[0], pNewPoint[1] + 1)
@@ -164,19 +168,20 @@ function init() {
         toFrom(v3(cNewPoint[0], 0, cNewPoint[1]), v3(nextPoint[0], 0, nextPoint[1]))
     )
 
-    for (var i = 0; i < 100; i++) {
+    // Use polar convert between polar coordinates and cartesian
+    // to simplify rotations
+    for (var i = 0; i < 1000; i++) {
         var prevPoint = cNewPoint;
         var pNewPoint = to_polar(cNewPoint[0], cNewPoint[1]);
-        var cNewPoint = to_cartesian(pNewPoint[0], pNewPoint[1] + 1)
+        var cNewPoint = to_cartesian(pNewPoint[0], pNewPoint[1] + 3)
         draw3d(
-            toFrom(v3(cNewPoint[0], .1 * i, cNewPoint[1]), v3(prevPoint[0], .1 * i, prevPoint[1]))
+            toFrom(
+                v3(cNewPoint[0], .1 * i, cNewPoint[1]),
+                v3(prevPoint[0], .1 * (i - 1), prevPoint[1]),
+                white
+            )
         )
     }
-
-
-
-
-
 
 
     // renderer
@@ -188,6 +193,25 @@ function init() {
     document.body.appendChild(stats.dom);
     window.addEventListener('resize', onWindowResize, false);
     render();
+
+    var i = 0;
+    // setInterval((s) => camera.position.y += Math.sin(++i * .01) * .5, 10);
+
+    function jitter3d() {
+
+        const jitterDistance = .3;
+        if (cam1) {
+            camera.position.x = camera.position.x + jitterDistance;
+            camera.position.z = camera.position.z + jitterDistance;
+        }
+        else {
+            camera.position.x = camera.position.x - jitterDistance;
+            camera.position.z = camera.position.z - jitterDistance;
+        }
+        cam1 = !cam1;
+    }
+
+    // setInterval(jitter3d, 100);
 }
 
 function onWindowResize() {
