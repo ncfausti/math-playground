@@ -42,9 +42,9 @@ function toFrom(to, from, color) {
 
 function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.x = 5;
-    camera.position.z = 5;
+    // camera.position.x = 5;
     camera.position.y = 5;
+    // camera.position.z = 5;
 
     controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 10.0;
@@ -195,7 +195,7 @@ function init() {
     render();
 
     var i = 0;
-    // setInterval((s) => camera.position.y += Math.sin(++i * .01) * .5, 10);
+    setInterval((s) => camera.position.y += Math.sin(++i * .01) * .5, 10);
 
     function jitter3d() {
 
