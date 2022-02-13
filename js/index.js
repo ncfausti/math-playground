@@ -22,31 +22,26 @@ function arrow3d(dir, origin, length, color, headLength, headWidth) {
     return new THREE.ArrowHelper(dir, _origin, length, color, headLength, headWidth);
 }
 
-function toFrom(to, from) {
+function toFrom(to, from, color) {
     const _from = from || v3(0, 0, 0);
+    const _color = color || 0xffffff;
+
+    // calculate differences
     const dirX = to.x - _from.x;
     const dirY = to.y - _from.y;
     const dirZ = to.z - _from.z;
 
+    // use difference as normalized direction
     const dir = v3(dirX, dirY, dirZ).normalize();
-
-    // var max = dirX >= dirY ? dirX : dirY;
-    // max = max >= dirZ ? max : dirZ;
-    // const hyp1 = Math.sqrt(dirX ** 2 + dirZ ** 2);
-    // const hyp2 = Math.sqrt(hyp1 ** 2 + dirY ** 2);
-    // const distance = Math.sqrt(<hyp1 + hyp2)
-
-    // const hyp3 = Math.max(hyp1, hyp2);
     const distance = Math.sqrt(dirZ ** 2 + dirX ** 2 + dirY ** 2);
-    console.log('dist:', distance);
-    return arrow3d(dir, _from, distance)
+    return arrow3d(dir, _from, distance, _color);
 }
 
 
 function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 7;
-    camera.position.y = 7;
+    camera.position.z = 3;
+    camera.position.y = 3;
     controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 1.0;
     controls.zoomSpeed = 1.2;
@@ -57,6 +52,7 @@ function init() {
     controls.dynamicDampingFactor = 0.3;
     controls.keys = [65, 83, 68];
     controls.addEventListener('change', render);
+
     // world
     scene = new THREE.Scene();
     // scene.background = new THREE.Color(0xcccccc);
@@ -65,122 +61,122 @@ function init() {
     // mimic draw3D from Orland book
     const draw3d = (...objs) => objs.forEach(obj => scene.add(obj));
 
-    // scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
-    var geometry = new THREE.CylinderBufferGeometry(0, 10, 90, 4, 1);
-    var material = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
+    // pink fog
+    scene.fog = new THREE.FogExp2(0xcc00cc, 0.05);
+
+    // var geometry = new THREE.CylinderBufferGeometry(0, 10, 90, 4, 1);
+    // var material = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
     // for (var i = 0; i < 10; i++) {
     //     for (var j = 0; j < 10; j++) {
     //         for (var k = 0; k < 10; k++) {
-    // var mesh = new THREE.Mesh(geometry, material);
-    // mesh.position.x = ( Math.random() - 0.5 ) * 1000;
-    // mesh.position.y = ( Math.random() - 0.5 ) * 1000;
-    // mesh.position.z = ( Math.random() - 0.5 ) * 1000;
-    // mesh.position.x = (1) * 50;
-    // mesh.position.y = (1) * 50;
-    // mesh.position.z = (1) * 50;
-    // mesh.updateMatrix();
-    // mesh.matrixAutoUpdate = false;
-    // scene.add(mesh);
-
-    draw3d(new THREE.GridHelper());
+    //             var mesh = new THREE.Mesh(geometry, material);
+    //             mesh.position.x = (Math.random() - 0.5) * 1000;
+    //             mesh.position.y = (Math.random() - 0.5) * 1000;
+    //             mesh.position.z = (Math.random() - 0.5) * 1000;
+    //             mesh.position.x = (i) * 50;
+    //             mesh.position.y = (j) * 50;
+    //             mesh.position.z = (k) * 50;
+    //             mesh.updateMatrix();
+    //             mesh.matrixAutoUpdate = false;
+    //             scene.add(mesh);
     //         }
     //     }
     // }
-    // lights
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(1, 1, 1);
-    draw3d(light);
-    var light = new THREE.DirectionalLight(0x002288);
-    light.position.set(- 1, - 1, - 1);
-    draw3d(light);
-    var light = new THREE.AmbientLight(0x222222);
-    draw3d(light);
+
+    draw3d(new THREE.GridHelper());
+
+    const light1 = new THREE.DirectionalLight(0xffffff);
+    const light2 = new THREE.DirectionalLight(0x002288);
+    const light3 = new THREE.AmbientLight(0x222222);
+
+    light1.position.set(1, 1, 1);
+    light2.position.set(- 1, - 1, - 1);
+
+    draw3d(light1);
+    draw3d(light2);
+    draw3d(light3);
 
     const dirX = new THREE.Vector3(2, 0, 0);
     const dirY = new THREE.Vector3(0, 2, 0);
     const dirZ = new THREE.Vector3(0, 0, 2);
-    //normalize the direction vector (convert to vector of length 1)
-    // dir.normalize();
 
     const origin = v3(0, 0, 0) // new THREE.Vector3(0, 0, 0);
-    const length = 1;
-
-    // const arrowHelper = new THREE.ArrowHelper(dir, origin, length, red);
+    const axesLength = 1;
     const axesHelper = new THREE.AxesHelper(5);
-    // axesHelper.setColors(0xff0000, 0x0000ff, 0x00ff00);
 
-    // const Arrow3d(dir) => {
-    //     const dir = new THREE.Vector3(...tupDir);
-    //     const origin = new THREE.Vector3(...tupOrigin);
-    //     const arrowHelper = new THREE.ArrowHelper(dir, origin, length, color);
-    //     scene.add(arrowHelper);
-    // }
-
-    const subVec = v3(...subLists(
-        v3(4, 3, 0).toArray(),
-        v3(1, 1, 0).toArray()));
+    const startingPoint = vec3(0, 0, 1);
 
     draw3d(
         // xyz axes
-        arrow3d(dirX, origin, length, red), // x
-        arrow3d(dirY, origin, length, green), // y
-        arrow3d(dirZ, origin, length, blue), // z 
+        arrow3d(dirX, origin, axesLength, red), // x
+        arrow3d(dirY, origin, axesLength, green), // y
+        arrow3d(dirZ, origin, axesLength, blue), // z 
 
-        arrow3d(v3(4, 3, 0).normalize(), v3(0, 0, 0), v3(4, 0, 3).length(), red),
-        // opposite direction as red, with starting point at tip of pink
-        arrow3d(v3(-1 * 4, -1 * 3, -1 * 0).normalize(), v3(3, 4, 0), v3(3, 4, 0).length(), red),
+        // 
+        // Ex. 3.2
+        // 
+        // arrow3d(v3(4, 3, 0).normalize(), v3(0, 0, 0), v3(4, 0, 3).length(), red),
+        // // opposite direction as red, with starting point at tip of pink
+        // arrow3d(v3(-1 * 4, -1 * 3, -1 * 0).normalize(), v3(3, 4, 0), v3(3, 4, 0).length(), red),
+        // arrow3d(v3(-1, 1, 0).normalize(), v3(0, 0, 0), v3(-1, 1, 0).length(), blue),
+        // arrow3d(v3(-1, 1, 0).normalize(), v3(4, 3, 0), v3(-1, 1, 0).length(), blue),
 
-        arrow3d(v3(-1, 1, 0).normalize(), v3(0, 0, 0), v3(-1, 1, 0).length(), blue),
-        arrow3d(v3(-1, 1, 0).normalize(), v3(4, 3, 0), v3(-1, 1, 0).length(), blue),
+        // // pink hypotenuse
+        // arrow3d(v3(3, 4, 0).normalize(), v3(0, 0, 0), v3(3, 4, 0).length(), pink),
 
-        // pink hypotenuse
-        arrow3d(v3(3, 4, 0).normalize(), v3(0, 0, 0), v3(3, 4, 0).length(), pink),
-        // opposite direction
-        arrow3d(v3(-1 * 3, -1 * 4, -1 * 0).normalize(), v3(3, 4, 0), v3(4, 0, 3).length(), pink),
+        // // opposite direction
+        // arrow3d(v3(-1 * 3, -1 * 4, -1 * 0).normalize(), v3(3, 4, 0), v3(4, 0, 3).length(), pink),
 
-        // an arrow that goes from 3,3,3 to (-1,-1,-1)
-        // arrow3d(v3(-1, -1, -1).normalize(), v3(3, 3, 3), v3(1, 1, 1).length() * 4, white),
-        toFrom(v3(-1, 1, 0), v3(3, 3, 3)),
-        toFrom(v3(0, 3, 3), v3(3, 3, 3)),
+        // // end Ex 3.2
+        // toFrom(v3(-1, 1, 0), v3(3, 3, 3)),
+        // toFrom(v3(0, 3, 3), v3(3, 3, 3)),
 
-        arrow3d(v3(1, 0, 0).normalize(), v3(0, 0, 0), 3, white),
-        arrow3d(v3(1, 0, 1).normalize(), v3(0, 0, 0), v3(3, 0, 3).length(), white),
-        arrow3d(v3(0, 1, 0).normalize(), v3(3, 0, 3), v3(0, 0, 3).length(), cyan),
+        // Ex 3.3 Mini project
+        // toFrom(v3(-1, 1, 0), v3(3, 3, 3)),
+        // toFrom(v3(3, 3, 3), v3(0, 3, 3)),
 
+        // toFrom(v3(.3, .3, .3), v3(0, 0, 1), pink),
+        toFrom(v3(.33, .333, 1), startingPoint, pink),
 
+        // toFrom(v3(.666, .666, .666), v3(.33, .333, 1), pink),
+        // toFrom(v3(.666, .999, .333), v3(.666, .666, .666), pink),
+        // toFrom(v3(.333, 1.333, 0), v3(.666, .999, .333), pink),
+        // toFrom(v3(0, 1.333, 0), v3(.333, 1.333, 0), pink),
 
-
-
-
-        // subtraction vector (x-z)
-        // arrow3d(subVec.normalize(),
-        //     subVec.length(), 0xff0000))
-        // arrow3d(v3(0, 0, -1).normalize(), v3(1, 1, 1), v3(0, 0, -1).length(), 0xaaff00),
-        // arrow3d(v3(0, 0, -1).normalize(), v3(1, 1, 1), v3(0, 0, -1).length(), 0xaaff00),
-        // arrow3d(v3(0, 0, -1).normalize(), v3(1, 1, 1), v3(0, 0, -1).length(), 0xaaff00),
-        // arrow3d(new THREE.Vector3(1, 1, 1), THREE.Vector3(0, 0, 0)),
+        // arrow3d(v3(1, 0, 0).normalize(), v3(0, 0, 0), 3, white),
+        // arrow3d(v3(1, 0, 1).normalize(), v3(0, 0, 0), v3(3, 0, 3).length(), white),
+        // arrow3d(v3(0, 1, 0).normalize(), v3(3, 0, 3), v3(0, 0, 3).length(), cyan),
         axesHelper
     );
 
-    // vector addition (4,0,3) + (-1, 0, 1) = (3, 0, 4) 
-    // how can I turn this into a compiler??, that accepts standard math notation
-    // and outputs this draw3d code:
-    // draw3d(
-    //     arrow3d(v3(4, 0, 3), v3(0, 0, 0), v3(4, 0, 3).length(), 0x0000ff),
-    //     arrow3d(v3(-1, 0, 1), v3(4, 0, 3), v3(-1, 0, 1).length(), 0xff0000),
-    //     arrow3d(
-    //         addVec3(
-    //             v3(4, 0, 3),
-    //             v3(-1, 0, 1)
-    //         ),
-    //         v3(0, 0, 0),
-    //         addVec3(
-    //             v3(4, 0, 3),
-    //             v3(-1, 0, 1)
-    //         ).length(),
-    //         0xff00ff,
-    //     )
-    // )
+    // better to use polar coordinates for rotations
+    polarStart = to_polar(startingPoint.x, startingPoint.z)
+
+    // rotate 1/4 around the origin
+    nextPoint = to_cartesian(polarStart[0], polarStart[1] + 1);
+    draw3d(
+        toFrom(v3(nextPoint[0], 0, nextPoint[1]), startingPoint)
+    )
+
+    var pNewPoint = to_polar(nextPoint[0], nextPoint[1]);
+    var cNewPoint = to_cartesian(pNewPoint[0], pNewPoint[1] + 1)
+    draw3d(
+        toFrom(v3(cNewPoint[0], 0, cNewPoint[1]), v3(nextPoint[0], 0, nextPoint[1]))
+    )
+
+    for (var i = 0; i < 100; i++) {
+        var prevPoint = cNewPoint;
+        var pNewPoint = to_polar(cNewPoint[0], cNewPoint[1]);
+        var cNewPoint = to_cartesian(pNewPoint[0], pNewPoint[1] + 1)
+        draw3d(
+            toFrom(v3(cNewPoint[0], .1 * i, cNewPoint[1]), v3(prevPoint[0], .1 * i, prevPoint[1]))
+        )
+    }
+
+
+
+
+
 
 
     // renderer
@@ -190,9 +186,7 @@ function init() {
     document.body.appendChild(renderer.domElement);
     stats = new Stats();
     document.body.appendChild(stats.dom);
-
     window.addEventListener('resize', onWindowResize, false);
-
     render();
 }
 

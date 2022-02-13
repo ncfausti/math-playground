@@ -5,6 +5,48 @@ function arrayEquals(a, b) {
         a.every((val, index) => val === b[index]);
 }
 
+function vec2(x, y) {
+    const _x = x;
+    const _y = y;
+    const length = () => Math.sqrt(_x ** 2 + _y ** 2);
+
+    return {
+        x: _x,
+        y: _y,
+        length
+    }
+}
+
+function vec3(x, y, z) {
+    const _x = x;
+    const _y = y;
+    const _z = z;
+    const length = () => Math.sqrt(
+        _x ** 2 +
+        _y ** 2 +
+        _z ** 2
+    );
+
+    return {
+        x: _x,
+        y: _y,
+        z: _z,
+        length
+    }
+}
+
+// distance, angle -> vec2
+const to_cartesian = (distance, angle) => [
+    distance * Math.cos(angle),
+    distance * Math.sin(angle)
+];
+
+// x,y -> [length, angle (radians)]
+const to_polar = (x, y) => [
+    vec2(x, y).length(),
+    Math.atan2(y, x)
+];
+
 // simple equality assertion test
 const assertEquals = (val1, val2) => { if (val1 !== val2) throw Error(`Assertion Error: ${a} !== ${b}`) };
 
@@ -63,10 +105,3 @@ assertEquals(
         subLists([10, 2, 4], [1, 2, 3]), [9, 0, 1]
     ),
     true);
-
-// console.log(mapToFrom([1, 1, 1], [4, 4, 4]));
-// assertEquals(
-//     arrayEquals(
-//         mapToFrom([1, 1, 1], [4, 4, 4])[0],
-//         [-1, -1, -1]),
-//     true);
