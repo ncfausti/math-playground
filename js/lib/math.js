@@ -80,6 +80,18 @@ const subLists = (v1, v2) => [...[...diffs(v1, v2)]];
 
 const mapToFrom = (to, from) => [subLists(to, from), 0, 0];
 
+// get the component of a vector in a direction
+const component = (v, dir) => dot(v, [...dir]) / v3(...dir).length();
+
+// project a vector onto a direction
+const vec3To2d = (v) =>
+    [
+        // v.x,
+        component(v, [1, 0, 0]),
+        // v.y,
+        component(v, [0, 1, 0])
+    ];
+
 assertEquals(sum([1, 2, 3]), 6);
 assertEquals(sum([-1, 0, 1, 8]), 8);
 assertEquals(sum([-1, -1, -1]), -3);
