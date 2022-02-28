@@ -42,9 +42,9 @@ function toFrom(to, from, color) {
 
 function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-    // camera.position.x = 5;
+    camera.position.x = 5;
     camera.position.y = 5;
-    // camera.position.z = 5;
+    camera.position.z = 5;
 
     controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 10.0;
@@ -115,41 +115,6 @@ function init() {
         arrow3d(dirX, origin, axesLength, red), // x
         arrow3d(dirY, origin, axesLength, green), // y
         arrow3d(dirZ, origin, axesLength, blue), // z 
-
-        // 
-        // Ex. 3.2
-        // 
-        // arrow3d(v3(4, 3, 0).normalize(), v3(0, 0, 0), v3(4, 0, 3).length(), red),
-        // // opposite direction as red, with starting point at tip of pink
-        // arrow3d(v3(-1 * 4, -1 * 3, -1 * 0).normalize(), v3(3, 4, 0), v3(3, 4, 0).length(), red),
-        // arrow3d(v3(-1, 1, 0).normalize(), v3(0, 0, 0), v3(-1, 1, 0).length(), blue),
-        // arrow3d(v3(-1, 1, 0).normalize(), v3(4, 3, 0), v3(-1, 1, 0).length(), blue),
-
-        // // pink hypotenuse
-        // arrow3d(v3(3, 4, 0).normalize(), v3(0, 0, 0), v3(3, 4, 0).length(), pink),
-
-        // // opposite direction
-        // arrow3d(v3(-1 * 3, -1 * 4, -1 * 0).normalize(), v3(3, 4, 0), v3(4, 0, 3).length(), pink),
-
-        // // end Ex 3.2
-        // toFrom(v3(-1, 1, 0), v3(3, 3, 3)),
-        // toFrom(v3(0, 3, 3), v3(3, 3, 3)),
-
-        // Ex 3.3 Mini project
-        // toFrom(v3(-1, 1, 0), v3(3, 3, 3)),
-        // toFrom(v3(3, 3, 3), v3(0, 3, 3)),
-
-        // toFrom(v3(.3, .3, .3), v3(0, 0, 1), pink),
-        // toFrom(v3(.33, .333, 1), startingPoint, white),
-
-        // toFrom(v3(.666, .666, .666), v3(.33, .333, 1), pink),
-        // toFrom(v3(.666, .999, .333), v3(.666, .666, .666), pink),
-        // toFrom(v3(.333, 1.333, 0), v3(.666, .999, .333), pink),
-        // toFrom(v3(0, 1.333, 0), v3(.333, 1.333, 0), pink),
-
-        // arrow3d(v3(1, 0, 0).normalize(), v3(0, 0, 0), 3, white),
-        // arrow3d(v3(1, 0, 1).normalize(), v3(0, 0, 0), v3(3, 0, 3).length(), white),
-        // arrow3d(v3(0, 1, 0).normalize(), v3(3, 0, 3), v3(0, 0, 3).length(), cyan),
         axesHelper
     );
 
@@ -193,25 +158,6 @@ function init() {
     document.body.appendChild(stats.dom);
     window.addEventListener('resize', onWindowResize, false);
     render();
-
-    var i = 0;
-    setInterval((s) => camera.position.y += Math.sin(++i * .01) * .5, 10);
-
-    function jitter3d() {
-
-        const jitterDistance = .3;
-        if (cam1) {
-            camera.position.x = camera.position.x + jitterDistance;
-            camera.position.z = camera.position.z + jitterDistance;
-        }
-        else {
-            camera.position.x = camera.position.x - jitterDistance;
-            camera.position.z = camera.position.z - jitterDistance;
-        }
-        cam1 = !cam1;
-    }
-
-    // setInterval(jitter3d, 100);
 }
 
 function onWindowResize() {
