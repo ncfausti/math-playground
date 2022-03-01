@@ -1,7 +1,7 @@
 if (WEBGL.isWebGLAvailable() === false) {
     document.body.appendChild(WEBGL.getWebGLErrorMessage());
 }
-var camera, controls, scene, renderer, stats;
+var camera, controls, scene, renderer;
 const red = 0xff0000;
 const green = 0x00ff00;
 const blue = 0x0000ff;
@@ -17,6 +17,9 @@ init();
 animate();
 
 function v3(x, y, z) { return new THREE.Vector3(x, y, z) }
+
+// mimic draw3D from Orland book
+function draw3d(...objs) { return objs.forEach(obj => scene.add(obj)) }
 
 function arrow3d(dir, origin, length, color, headLength, headWidth) {
     const _origin = origin || v3(0, 0, 0);
@@ -62,8 +65,7 @@ function init() {
     // scene.background = new THREE.Color(0xcccccc);
     scene.background = new THREE.Color(0xcc4433);
 
-    // mimic draw3D from Orland book
-    const draw3d = (...objs) => objs.forEach(obj => scene.add(obj));
+
 
     // pink fog
     scene.fog = new THREE.FogExp2(0xff00ff, 0.08);
@@ -139,13 +141,13 @@ function init() {
         var prevPoint = cNewPoint;
         var pNewPoint = to_polar(cNewPoint[0], cNewPoint[1]);
         var cNewPoint = to_cartesian(pNewPoint[0], pNewPoint[1] + 3)
-        draw3d(
-            toFrom(
-                v3(cNewPoint[0], .1 * i, cNewPoint[1]),
-                v3(prevPoint[0], .1 * (i - 1), prevPoint[1]),
-                white
-            )
-        )
+        // draw3d(
+        //     toFrom(
+        //         v3(cNewPoint[0], .1 * i, cNewPoint[1]),
+        //         v3(prevPoint[0], .1 * (i - 1), prevPoint[1]),
+        //         white
+        //     )
+        // )
     }
 
 
@@ -154,8 +156,8 @@ function init() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-    stats = new Stats();
-    document.body.appendChild(stats.dom);
+    // stats = new Stats();
+    // document.body.appendChild(stats.dom);
     window.addEventListener('resize', onWindowResize, false);
     render();
 }
@@ -171,7 +173,7 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
-    stats.update();
+    // stats.update();
 }
 
 function render() {
@@ -183,6 +185,7 @@ document.addEventListener('keypress', (event) => {
     console.log('keypress event\n\n' + 'key: ' + keyName);
     handleKeyPress(keyName);
 });
+
 
 
 
