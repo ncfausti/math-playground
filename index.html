@@ -30,7 +30,10 @@
 	<!-- <span style="position:absolute;">press:<br> q w e r <br> a s d f</span> -->
 
 	<div id="sidebar">
-		<textarea name="calculations" id="calculations" cols="30" rows="10">abc</textarea>
+		<textarea name="calculations" id="calculations" cols="30" rows="10">1 0 1</textarea>
+		<textarea name="calculations2" id="calculations2" cols="30" rows="10"></textarea>
+		<button onclick="checkCalculations()">draw</button>
+
 	</div>
 	<div id="container">
 
@@ -46,21 +49,29 @@
 
 	<script>
 		function checkCalculations() {
-			console.log('checkCalculations');
 			try {
-				const v = v3(...eval(document.getElementById('calculations').value));
+				const calculations = document.getElementById("calculations").value;
+				const arr = calculations.split(" ");
+				// console.log(arr);
+				// const vals = arr.split(" ");
+				console.log(arr);
+				const vals = arr.map(v => parseInt(v));
+				const v = v3(...vals);
 				console.log(v);
+				console.log(scene);
 				draw3d(
-					arrow3d(v.normalize(), v3(0, 0, 0), 1, yellow),
+					toFrom(v, v3(0, 0, 0), 1, red),
 				);
+				render();
 			}
 			catch (e) {
+				console.log('ERROR')
 				console.log(e);
 				return;
 			}
 		}
 
-		setInterval(checkCalculations, 200);
+		// setInterval(checkCalculations, 200);
 	</script>
 
 </body>

@@ -44,31 +44,22 @@ function toFrom(to, from, color) {
 
 
 function init() {
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+    camera = new THREE.PerspectiveCamera(120, window.innerWidth / window.innerHeight, 3, 1000);
+    // camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, 1, 1000);
     camera.position.x = 5;
     camera.position.y = 5;
     camera.position.z = 5;
 
-    controls = new THREE.TrackballControls(camera);
-    controls.rotateSpeed = 10.0;
-    controls.zoomSpeed = .8;
-    controls.panSpeed = 0.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.1;
-    controls.keys = [65, 83, 68];
-    controls.addEventListener('change', render);
 
     // world
     scene = new THREE.Scene();
-    // scene.background = new THREE.Color(0xcccccc);
-    scene.background = new THREE.Color(0xcc4433);
+    scene.background = new THREE.Color(0xffffff);
+    // scene.background = new THREE.Color(0xcc4433);
 
 
 
     // pink fog
-    scene.fog = new THREE.FogExp2(0xff00ff, 0.08);
+    // scene.fog = new THREE.FogExp2(0xff00ff, 0.08);
 
     // var geometry = new THREE.CylinderBufferGeometry(0, 10, 90, 4, 1);
     // var material = new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true });
@@ -93,7 +84,7 @@ function init() {
 
     const light1 = new THREE.DirectionalLight(0xffffff);
     const light2 = new THREE.DirectionalLight(0x002288);
-    const light3 = new THREE.AmbientLight(0x222222);
+    const light3 = new THREE.AmbientLight(0x888888);
 
     light1.position.set(1, 1, 1);
     light2.position.set(- 1, - 1, - 1);
@@ -145,7 +136,7 @@ function init() {
         //     toFrom(
         //         v3(cNewPoint[0], .1 * i, cNewPoint[1]),
         //         v3(prevPoint[0], .1 * (i - 1), prevPoint[1]),
-        //         white
+        //         red
         //     )
         // )
     }
@@ -158,6 +149,20 @@ function init() {
     document.body.appendChild(renderer.domElement);
     // stats = new Stats();
     // document.body.appendChild(stats.dom);
+
+    // controls
+    // controls = new THREE.TrackballControls(camera);
+    // controls.rotateSpeed = 10.0;
+    // controls.zoomSpeed = .8;
+    // controls.panSpeed = 0.8;
+    // controls.noZoom = false;
+    // controls.noPan = false;
+    // controls.staticMoving = true;
+    // controls.dynamicDampingFactor = 0.1;
+    // controls.keys = [65, 83, 68];
+    // controls.addEventListener('change', render);
+
+
     window.addEventListener('resize', onWindowResize, false);
     render();
 }
@@ -172,7 +177,7 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();
+    // controls.update();
     // stats.update();
 }
 
@@ -180,14 +185,14 @@ function render() {
     renderer.render(scene, camera);
 }
 
-document.addEventListener('keypress', (event) => {
-    const keyName = event.key;
-    console.log('keypress event\n\n' + 'key: ' + keyName);
-    handleKeyPress(keyName);
-});
+// document.addEventListener('keypress', (event) => {
+//     const keyName = event.key;
+//     console.log('keypress event\n\n' + 'key: ' + keyName);
+//     handleKeyPress(keyName);
+// });
 
 
-
+// document.addEventListener('keydown', console.log);
 
 function handleKeyPress(key) {
     if ((key) === "w")
