@@ -92,6 +92,34 @@ const vec3To2d = (v) =>
         component(v, [0, 1, 0])
     ];
 
+function scale(vec, scalar) {
+    return vec.map(v => v * scalar);
+}
+
+function translate(vec, translationVec) {
+    if (vec.length !== translationVec.length) {
+        throw Error('Vectors must be of the same length');
+    }
+    return vec.map((_, i) => vec[i] + translationVec[i]);
+}
+
+function scaleBy(scalar) {
+    function newFunc(vec) {
+        return scale(vec, scalar);
+    }
+    return newFunc;
+}
+
+function translateBy(translation) {
+    function newFunc(vec) {
+        return translate(vec, translation);
+    }
+    return newFunc;
+}
+
+
+
+// Tests
 assertEquals(sum([1, 2, 3]), 6);
 assertEquals(sum([-1, 0, 1, 8]), 8);
 assertEquals(sum([-1, -1, -1]), -3);
