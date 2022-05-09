@@ -117,7 +117,18 @@ function translateBy(translation) {
     return newFunc;
 }
 
-
+// compose any number of functions => composedFn
+function compose() {
+    args = Object.values(arguments);
+    function newFn(x) {
+        state = x;
+        args.reverse().forEach(
+            fn => state = fn(state)
+        );
+        return state;
+    }
+    return newFn
+}
 
 // Tests
 assertEquals(sum([1, 2, 3]), 6);
@@ -145,3 +156,16 @@ assertEquals(
         subLists([10, 2, 4], [1, 2, 3]), [9, 0, 1]
     ),
     true);
+
+
+// compose tests
+const s2 = scaleBy(2)
+const tx5 = translateBy([5, 0, 0]);
+const s3 = scaleBy(3);
+const composed = compose(s2, tx5, s3);
+const vec141 = [1, 4, 1];
+
+assertEquals(
+    s2(tx5(s3(vec141))),
+    composed(vec141)
+);
