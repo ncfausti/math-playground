@@ -48,7 +48,7 @@ const to_polar = (x, y) => [
 ];
 
 // simple equality assertion test
-const assertEquals = (val1, val2) => { if (val1 !== val2) throw Error(`Assertion Error: ${a} !== ${b}`) };
+const assertEquals = (val1, val2) => { if (val1 !== val2) throw Error(`Assertion Error: ${val1} !== ${val2}`) };
 
 // pair values in two lists => list of tuples
 const zip = (vec1, vec2) => vec1.map(
@@ -165,7 +165,23 @@ const s3 = scaleBy(3);
 const composed = compose(s2, tx5, s3);
 const vec141 = [1, 4, 1];
 
-assertEquals(
-    s2(tx5(s3(vec141))),
-    composed(vec141)
-);
+// assertEquals(
+//     s2(tx5(s3(vec141))),
+//     composed(vec141)
+// );
+
+// curry tests
+function curry2(f) {
+    function newFn(x) {
+        function newFn2(y) {
+            return f(x, y);
+        }
+        return newFn2;
+    }
+    return newFn;
+}
+
+const addTest = (a, b) => a + b;
+curriedAdd = curry2(addTest);
+assertEquals(curriedAdd(1)(2), 3);
+
